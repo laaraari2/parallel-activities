@@ -1,427 +1,243 @@
-"use client";
-
+import Link from "next/link";
 import {
+  ArrowLeft,
   CalendarDays,
-  ChevronLeft,
   Clock3,
   MapPin,
-  Plus,
   Search,
-  SlidersHorizontal,
-  Users,
 } from "lucide-react";
-
-import { useMemo, useState } from "react";
+import AppShell from "../components/AppShell";
 
 const activities = [
   {
-    id: 1,
+    month: "أكتوبر",
+    date: "05",
+    day: "الأحد",
     title: "الاحتفال باليوم العالمي للمدرس",
     type: "ثقافي",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "يحدد لاحقاً",
-    target: "أطر المؤسسة والتلاميذ",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-purple-50 text-purple-700",
+    time: "10:00",
+    location: "المؤسسة",
+    status: "قيد الإعداد",
   },
   {
-    id: 2,
+    month: "نونبر",
+    date: "06",
+    day: "الخميس",
     title: "الاحتفال بذكرى المسيرة الخضراء",
     type: "وطني",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "يحدد لاحقاً",
-    target: "تلاميذ المؤسسة",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-emerald-50 text-emerald-700",
+    time: "10:00",
+    location: "قاعة الأنشطة",
+    status: "مخطط",
   },
   {
-    id: 3,
+    month: "يناير",
+    date: "23",
+    day: "الجمعة",
     title: "حفل نهاية الأسدس الأول",
     type: "احتفالي",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "يحدد لاحقاً",
-    target: "تلاميذ المؤسسة والأطر",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-orange-50 text-orange-700",
+    time: "15:00",
+    location: "قاعة المؤسسة",
+    status: "مخطط",
   },
   {
-    id: 4,
+    month: "مارس",
+    date: "10",
+    day: "الثلاثاء",
     title: "حفل ديني بمناسبة شهر رمضان",
     type: "ديني",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "يحدد لاحقاً",
-    target: "تلاميذ المؤسسة",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-amber-50 text-amber-700",
+    time: "15:00",
+    location: "قاعة الأنشطة",
+    status: "مخطط",
   },
   {
-    id: 5,
+    month: "أبريل",
+    date: "18",
+    day: "السبت",
     title: "الأبواب المفتوحة",
-    type: "تواصلي",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "مرافق المؤسسة",
-    target: "الأسر والزوار",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-cyan-50 text-cyan-700",
+    type: "تربوي",
+    time: "09:00",
+    location: "المؤسسة",
+    status: "مخطط",
   },
   {
-    id: 6,
+    month: "ماي",
+    date: "08",
+    day: "الجمعة",
     title: "اللقاء المسرحي الخامس",
     type: "فني",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "يحدد لاحقاً",
-    target: "تلاميذ المؤسسة",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-pink-50 text-pink-700",
+    time: "14:30",
+    location: "قاعة العروض",
+    status: "مخطط",
   },
   {
-    id: 7,
+    month: "يونيو",
+    date: "30",
+    day: "الثلاثاء",
     title: "حفل نهاية السنة الدراسية",
     type: "احتفالي",
-    date: "يحدد لاحقاً",
-    time: "يحدد لاحقاً",
-    place: "يحدد لاحقاً",
-    target: "تلاميذ المؤسسة والأسر",
-    status: "مبرمج",
-    statusStyle: "bg-blue-50 text-blue-700 border-blue-200",
-    typeStyle: "bg-orange-50 text-orange-700",
+    time: "16:00",
+    location: "قاعة المؤسسة",
+    status: "مخطط",
   },
 ];
 
-const types = ["الكل", "رياضي", "ثقافي", "علمي", "بيئي"];
+const typeClasses: Record<string, string> = {
+  ثقافي: "bg-blue-50 text-blue-700",
+  وطني: "bg-emerald-50 text-emerald-700",
+  احتفالي: "bg-violet-50 text-violet-700",
+  ديني: "bg-amber-50 text-amber-700",
+  تربوي: "bg-cyan-50 text-cyan-700",
+  فني: "bg-pink-50 text-pink-700",
+};
 
 export default function ProgramPage() {
-  const [search, setSearch] = useState("");
-  const [selectedType, setSelectedType] = useState("الكل");
-
-  const filteredActivities = useMemo(() => {
-    return activities.filter((activity) => {
-      const matchesType =
-        selectedType === "الكل" || activity.type === selectedType;
-
-      const matchesSearch =
-        activity.title.includes(search) ||
-        activity.place.includes(search) ||
-        activity.target.includes(search);
-
-      return matchesType && matchesSearch;
-    });
-  }, [search, selectedType]);
-
   return (
-    <main dir="rtl" className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
-                <span>الرئيسية</span>
-                <ChevronLeft className="h-4 w-4" />
-                <span className="text-slate-900">برنامج الأنشطة</span>
+    <AppShell>
+      <div className="min-h-screen">
+        <header className="border-b border-slate-200/80 bg-white">
+          <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8">
+            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+              <div>
+                <div className="mb-3 flex items-center gap-2 text-sm text-slate-400">
+                  <Link href="/" className="hover:text-slate-700">
+                    الرئيسية
+                  </Link>
+                  <span>/</span>
+                  <span className="text-slate-700">برنامج الأنشطة</span>
+                </div>
+
+                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                  برنامج الأنشطة
+                </h1>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  جميع الأنشطة الموازية مرتبة حسب تاريخ التنفيذ.
+                </p>
               </div>
 
-              <h1 className="text-2xl font-bold text-slate-900">
-                برنامج الأنشطة الموازية
-              </h1>
+              <div className="relative w-full md:w-72">
+                <Search
+                  size={17}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
+                />
 
-              <p className="mt-1 text-sm text-slate-500">
-                تخطيط وتتبع الأنشطة الموازية خلال الموسم الدراسي
+                <input
+                  type="text"
+                  placeholder="البحث عن نشاط..."
+                  className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 pr-11 pl-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white"
+                />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="mx-auto max-w-5xl px-5 py-8 sm:px-8">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">
+                الموسم الدراسي الحالي
+              </p>
+              <p className="mt-1 text-xs text-slate-400">
+                {activities.length} أنشطة مبرمجة
               </p>
             </div>
 
-            <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800">
-              <Plus className="h-4 w-4" />
-              إضافة نشاط
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Filters */}
-        <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            {/* Search */}
-            <div className="relative w-full lg:max-w-md">
-              <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-
-              <input
-                type="text"
-                placeholder="البحث عن نشاط..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-10 pl-4 text-sm outline-none transition focus:border-slate-400 focus:bg-white"
-              />
-            </div>
-
-            {/* Filters */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="ml-2 flex items-center gap-2 text-sm text-slate-500">
-                <SlidersHorizontal className="h-4 w-4" />
-                تصفية:
-              </div>
-
-              {types.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setSelectedType(type)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-                    selectedType === type
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Summary */}
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <SummaryCard
-            label="إجمالي الأنشطة"
-            value={activities.length}
-            icon={<CalendarDays className="h-5 w-5" />}
-          />
-
-          <SummaryCard
-            label="أنشطة رياضية"
-            value={activities.filter((a) => a.type === "رياضي").length}
-            icon={<Users className="h-5 w-5" />}
-          />
-
-          <SummaryCard
-            label="أنشطة مبرمجة"
-            value={activities.filter((a) => a.status === "مبرمج").length}
-            icon={<Clock3 className="h-5 w-5" />}
-          />
-
-          <SummaryCard
-            label="أنشطة قيد التنفيذ"
-            value={activities.filter((a) => a.status === "قيد التنفيذ").length}
-            icon={<CalendarDays className="h-5 w-5" />}
-          />
-        </div>
-
-        {/* Activities */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <div className="border-b border-slate-200 px-5 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="font-semibold text-slate-900">
-                  الأنشطة المبرمجة
-                </h2>
-                <p className="mt-1 text-xs text-slate-500">
-                  {filteredActivities.length} نشاط
-                </p>
-              </div>
+            <div className="hidden items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-500 sm:flex">
+              <CalendarDays size={15} />
+              البرنامج السنوي
             </div>
           </div>
 
-          {/* Desktop table */}
-          <div className="hidden overflow-x-auto md:block">
-            <table className="w-full text-right">
-              <thead className="bg-slate-50 text-xs text-slate-500">
-                <tr>
-                  <th className="px-5 py-4 font-medium">النشاط</th>
-                  <th className="px-5 py-4 font-medium">التاريخ</th>
-                  <th className="px-5 py-4 font-medium">المكان</th>
-                  <th className="px-5 py-4 font-medium">الفئة المستهدفة</th>
-                  <th className="px-5 py-4 font-medium">الحالة</th>
-                  <th className="px-5 py-4 font-medium"></th>
-                </tr>
-              </thead>
+          <div className="relative">
+            <div className="absolute bottom-0 right-[23px] top-0 w-px bg-slate-200 sm:right-[31px]" />
 
-              <tbody className="divide-y divide-slate-100">
-                {filteredActivities.map((activity) => (
-                  <tr
-                    key={activity.id}
-                    className="transition hover:bg-slate-50"
-                  >
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${activity.typeStyle}`}
-                        >
-                          <CalendarDays className="h-5 w-5" />
+            <div className="space-y-6">
+              {activities.map((activity) => (
+                <div key={activity.title} className="relative">
+                  <div className="flex gap-4 sm:gap-6">
+                    <div className="relative z-10 flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-950 shadow-sm sm:h-16 sm:w-16">
+                      <span className="text-lg font-bold sm:text-xl">
+                        {activity.date}
+                      </span>
+                      <span className="text-[9px] text-slate-400 sm:text-[10px]">
+                        {activity.month}
+                      </span>
+                    </div>
+
+                    <Link
+                      href="/activities"
+                      className="group min-w-0 flex-1 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6"
+                    >
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <div className="mb-3 flex flex-wrap items-center gap-2">
+                              <span
+                                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                                  typeClasses[activity.type] ??
+                                  "bg-slate-100 text-slate-600"
+                                }`}
+                              >
+                                {activity.type}
+                              </span>
+
+                              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] text-slate-500">
+                                {activity.status}
+                              </span>
+                            </div>
+
+                            <h2 className="text-base font-bold leading-7 text-slate-900 transition group-hover:text-slate-600 sm:text-lg">
+                              {activity.title}
+                            </h2>
+                          </div>
+
+                          <ArrowLeft
+                            size={18}
+                            className="mt-1 shrink-0 text-slate-300 transition group-hover:-translate-x-1 group-hover:text-slate-700"
+                          />
                         </div>
 
-                        <div>
-                          <p className="font-medium text-slate-900">
-                            {activity.title}
-                          </p>
-                          <span className="text-xs text-slate-500">
-                            {activity.type}
+                        <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-100 pt-4 text-xs text-slate-400">
+                          <span className="flex items-center gap-1.5">
+                            <span className="font-medium text-slate-500">
+                              {activity.day}
+                            </span>
+                          </span>
+
+                          <span className="flex items-center gap-1.5">
+                            <Clock3 size={14} />
+                            {activity.time}
+                          </span>
+
+                          <span className="flex items-center gap-1.5">
+                            <MapPin size={14} />
+                            {activity.location}
                           </span>
                         </div>
                       </div>
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <div>
-                        <p className="text-sm font-medium text-slate-800">
-                          {activity.date}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          {activity.time}
-                        </p>
-                      </div>
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <MapPin className="h-4 w-4 text-slate-400" />
-                        {activity.place}
-                      </div>
-                    </td>
-
-                    <td className="px-5 py-4 text-sm text-slate-600">
-                      {activity.target}
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <span
-                        className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${activity.statusStyle}`}
-                      >
-                        {activity.status}
-                      </span>
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <button className="text-sm font-medium text-slate-700 hover:text-slate-950">
-                        التفاصيل
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile cards */}
-          <div className="divide-y divide-slate-100 md:hidden">
-            {filteredActivities.map((activity) => (
-              <div key={activity.id} className="p-4">
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${activity.typeStyle}`}
-                  >
-                    <CalendarDays className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="font-semibold text-slate-900">
-                          {activity.title}
-                        </h3>
-
-                        <p className="mt-1 text-xs text-slate-500">
-                          {activity.type}
-                        </p>
-                      </div>
-
-                      <span
-                        className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium ${activity.statusStyle}`}
-                      >
-                        {activity.status}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
-                      <div>
-                        <p className="text-slate-400">التاريخ</p>
-                        <p className="mt-1 font-medium text-slate-700">
-                          {activity.date}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-slate-400">التوقيت</p>
-                        <p className="mt-1 font-medium text-slate-700">
-                          {activity.time}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-slate-400">المكان</p>
-                        <p className="mt-1 font-medium text-slate-700">
-                          {activity.place}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-slate-400">الفئة</p>
-                        <p className="mt-1 font-medium text-slate-700">
-                          {activity.target}
-                        </p>
-                      </div>
-                    </div>
-
-                    <button className="mt-4 w-full rounded-lg bg-slate-100 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200">
-                      عرض تفاصيل النشاط
-                    </button>
+                    </Link>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {filteredActivities.length === 0 && (
-            <div className="p-12 text-center">
-              <CalendarDays className="mx-auto h-10 w-10 text-slate-300" />
+          <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center">
+            <CalendarDays
+              size={22}
+              className="mx-auto text-slate-300"
+            />
 
-              <h3 className="mt-4 font-medium text-slate-900">
-                لم يتم العثور على أنشطة
-              </h3>
+            <p className="mt-3 text-sm font-semibold text-slate-700">
+              نهاية البرنامج
+            </p>
 
-              <p className="mt-1 text-sm text-slate-500">
-                جرب تغيير كلمات البحث أو الفلتر.
-              </p>
-            </div>
-          )}
-        </section>
+            <p className="mt-1 text-xs text-slate-400">
+              يمكن إضافة أنشطة جديدة لاحقاً من لوحة الإدارة.
+            </p>
+          </div>
+        </main>
       </div>
-    </main>
-  );
-}
-
-function SummaryCard({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value: number;
-  icon: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
-        </div>
-
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-          {icon}
-        </div>
-      </div>
-    </div>
+    </AppShell>
   );
 }

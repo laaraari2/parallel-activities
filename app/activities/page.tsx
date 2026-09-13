@@ -1,452 +1,393 @@
-"use client";
-
+import Link from "next/link";
 import {
   ArrowRight,
   CalendarDays,
   CheckCircle2,
-  ClipboardCheck,
+  ChevronLeft,
   Clock3,
   FileText,
   MapPin,
-  Pencil,
-  Settings2,
-  Target,
   Users,
-  Wrench,
 } from "lucide-react";
+import AppShell from "../components/AppShell";
 
-const executionSteps = [
+const stages = [
+  { title: "التخطيط", done: true },
+  { title: "الإعداد", done: true },
+  { title: "التنفيذ", done: false },
+  { title: "التقييم", done: false },
+  { title: "التقرير", done: false },
+];
+
+const tasks = [
   {
-    id: 1,
-    title: "التخطيط",
-    description:
-      "تحديد أهداف النشاط، الفئة المستهدفة، التاريخ، المكان، والمسؤولين عن التنظيم.",
-    status: "منجز",
+    title: "تحديد برنامج الاحتفال",
+    owner: "الأستاذ المسؤول",
+    done: true,
   },
   {
-    id: 2,
-    title: "الإعداد",
-    description:
-      "تشكيل اللجان، توزيع المهام، تجهيز الفضاء والمعدات وإعداد البرنامج التفصيلي.",
-    status: "منجز",
+    title: "إعداد لائحة المشاركين",
+    owner: "فريق التنظيم",
+    done: true,
   },
   {
-    id: 3,
-    title: "التنفيذ",
-    description:
-      "تنفيذ فقرات النشاط وفق البرنامج، تنظيم المشاركين وتتبع سير مختلف المراحل.",
-    status: "قيد التنفيذ",
+    title: "تجهيز القاعة والمعدات",
+    owner: "الإدارة",
+    done: false,
   },
   {
-    id: 4,
-    title: "التقييم",
-    description:
-      "جمع الملاحظات، تقييم المشاركة وقياس مدى تحقيق أهداف النشاط.",
-    status: "لم يبدأ",
-  },
-  {
-    id: 5,
-    title: "التقرير",
-    description:
-      "إعداد التقرير النهائي وتوثيق النتائج والصور والملاحظات والتوصيات.",
-    status: "لم يبدأ",
+    title: "إعداد الفقرات والعروض",
+    owner: "فريق النشاط",
+    done: false,
   },
 ];
 
-const mechanisms = [
-  "تشكيل لجنة تنظيمية للنشاط",
-  "تقسيم التلاميذ إلى مجموعات حسب الفئة والمستوى",
-  "تحديد مسؤول عن كل مجموعة",
-  "إعداد البرنامج الزمني للنشاط",
-  "تجهيز الملعب والمعدات الرياضية",
-  "تسجيل المشاركين والحضور",
-  "تتبع سير النشاط ميدانيًا",
-  "توثيق النشاط بالصور والنتائج",
+const documents = [
+  {
+    name: "برنامج الاحتفال",
+    type: "PDF",
+  },
+  {
+    name: "لائحة المشاركين",
+    type: "DOCX",
+  },
+  {
+    name: "بطاقة تقنية للنشاط",
+    type: "PDF",
+  },
 ];
 
-export default function ActivityDetailsPage() {
+export default function ActivitiesPage() {
   return (
-    <main dir="rtl" className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <button className="mb-3 flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900">
-                <ArrowRight className="h-4 w-4" />
-                العودة إلى برنامج الأنشطة
-              </button>
+    <AppShell>
+      <div className="min-h-screen">
+        <header className="border-b border-slate-200/80 bg-white">
+          <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8">
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <Link href="/" className="hover:text-slate-700">
+                الرئيسية
+              </Link>
 
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
-                  <CalendarDays className="h-6 w-6" />
+              <ChevronLeft size={15} />
+
+              <Link href="/program" className="hover:text-slate-700">
+                برنامج الأنشطة
+              </Link>
+
+              <ChevronLeft size={15} />
+
+              <span className="text-slate-700">تفاصيل النشاط</span>
+            </div>
+          </div>
+        </header>
+
+        <main className="mx-auto max-w-7xl px-5 py-8 sm:px-8">
+          <section className="overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white sm:p-8">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-slate-300">
+                    ثقافي
+                  </span>
+
+                  <span className="rounded-full bg-amber-400/10 px-3 py-1.5 text-xs font-medium text-amber-300">
+                    قيد الإعداد
+                  </span>
                 </div>
 
-                <div>
-                  <h1 className="text-2xl font-bold text-slate-900">
-                    اليوم الرياضي للمؤسسة
-                  </h1>
+                <h1 className="text-2xl font-bold leading-tight sm:text-4xl">
+                  الاحتفال باليوم العالمي للمدرس
+                </h1>
 
-                  <p className="mt-1 text-sm text-slate-500">
-                    نشاط رياضي • الموسم الدراسي 2026 / 2027
-                  </p>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">
+                  نشاط ثقافي للاحتفاء بالمدرس ودوره في بناء الأجيال، من خلال
+                  فقرات تكريمية وعروض وأنشطة تربوية.
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-xs text-slate-400">
+                  <span className="flex items-center gap-2">
+                    <CalendarDays size={15} />
+                    05 أكتوبر
+                  </span>
+
+                  <span className="flex items-center gap-2">
+                    <Clock3 size={15} />
+                    10:00
+                  </span>
+
+                  <span className="flex items-center gap-2">
+                    <MapPin size={15} />
+                    المؤسسة
+                  </span>
                 </div>
+              </div>
+
+              <Link
+                href="/program"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10"
+              >
+                <ArrowRight size={17} />
+                العودة للبرنامج
+              </Link>
+            </div>
+          </section>
+
+          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-bold">تقدم النشاط</p>
+                <p className="mt-1 text-xs text-slate-400">
+                  تم إنجاز مرحلتين من أصل خمس مراحل
+                </p>
+              </div>
+
+              <div className="text-left sm:text-right">
+                <span className="text-2xl font-bold">40%</span>
               </div>
             </div>
 
-            <button className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">
-              <Pencil className="h-4 w-4" />
-              تعديل النشاط
-            </button>
-          </div>
-        </div>
-      </header>
+            <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div className="h-full w-[40%] rounded-full bg-slate-950" />
+            </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Main information */}
-        <section className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <InfoCard
-            icon={<CalendarDays className="h-5 w-5" />}
-            label="التاريخ"
-            value="15 أكتوبر 2026"
-          />
-
-          <InfoCard
-            icon={<Clock3 className="h-5 w-5" />}
-            label="التوقيت"
-            value="09:00 - 16:00"
-          />
-
-          <InfoCard
-            icon={<MapPin className="h-5 w-5" />}
-            label="المكان"
-            value="الملعب الرياضي"
-          />
-
-          <InfoCard
-            icon={<Users className="h-5 w-5" />}
-            label="الفئة المستهدفة"
-            value="جميع التلاميذ"
-          />
-        </section>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Left content */}
-          <div className="space-y-6 lg:col-span-2">
-            {/* Objectives */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-              <SectionHeader
-                icon={<Target className="h-5 w-5" />}
-                title="أهداف النشاط"
-              />
-
-              <div className="p-5">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Objective text="تنمية روح التعاون والعمل الجماعي." />
-                  <Objective text="تشجيع التلاميذ على ممارسة النشاط الرياضي." />
-                  <Objective text="اكتشاف المواهب الرياضية بالمؤسسة." />
-                  <Objective text="تعزيز الروح الرياضية والمنافسة الشريفة." />
-                </div>
-              </div>
-            </section>
-
-            {/* Execution mechanisms */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-              <SectionHeader
-                icon={<Settings2 className="h-5 w-5" />}
-                title="آليات تنفيذ النشاط"
-                description="الإجراءات العملية المعتمدة لتنفيذ النشاط"
-              />
-
-              <div className="p-5">
-                <div className="space-y-3">
-                  {mechanisms.map((mechanism, index) => (
-                    <div
-                      key={mechanism}
-                      className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50 p-3"
-                    >
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-xs font-semibold text-slate-600 shadow-sm">
+            <div className="mt-6 grid gap-3 sm:grid-cols-5">
+              {stages.map((stage, index) => (
+                <div
+                  key={stage.title}
+                  className={`flex items-center gap-3 rounded-2xl p-3 ${
+                    stage.done ? "bg-slate-950 text-white" : "bg-slate-50"
+                  }`}
+                >
+                  <div
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+                      stage.done
+                        ? "bg-white/10 text-white"
+                        : "bg-white text-slate-400"
+                    }`}
+                  >
+                    {stage.done ? (
+                      <CheckCircle2 size={16} />
+                    ) : (
+                      <span className="text-xs font-bold">
                         {index + 1}
+                      </span>
+                    )}
+                  </div>
+
+                  <span
+                    className={`text-xs font-medium ${
+                      stage.done ? "text-white" : "text-slate-500"
+                    }`}
+                  >
+                    {stage.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
+            <div className="space-y-6">
+              <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-6">
+                  <h2 className="text-lg font-bold">أهداف النشاط</h2>
+                  <p className="mt-1 text-sm text-slate-400">
+                    النتائج التربوية والتنظيمية المنتظرة
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {[
+                    "التعريف بدور المدرس وأهميته",
+                    "تعزيز ثقافة الاعتراف بالمجهود التربوي",
+                    "إشراك المتعلمين في النشاط",
+                    "خلق أجواء احتفالية داخل المؤسسة",
+                  ].map((objective) => (
+                    <div
+                      key={objective}
+                      className="rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600"
+                    >
+                      <span className="mb-2 block h-1.5 w-1.5 rounded-full bg-slate-950" />
+                      {objective}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold">المهام</h2>
+                    <p className="mt-1 text-sm text-slate-400">
+                      المهام المرتبطة بتنفيذ النشاط
+                    </p>
+                  </div>
+
+                  <span className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-500">
+                    2 / 4 مكتملة
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {tasks.map((task) => (
+                    <div
+                      key={task.title}
+                      className="flex items-center gap-4 rounded-2xl border border-slate-100 p-4"
+                    >
+                      <div
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                          task.done
+                            ? "bg-slate-950 text-white"
+                            : "bg-slate-100 text-slate-300"
+                        }`}
+                      >
+                        <CheckCircle2 size={17} />
                       </div>
 
-                      <p className="pt-1 text-sm text-slate-700">
-                        {mechanism}
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={`text-sm font-medium ${
+                            task.done
+                              ? "text-slate-400 line-through"
+                              : "text-slate-700"
+                          }`}
+                        >
+                          {task.title}
+                        </p>
+
+                        <p className="mt-1 text-xs text-slate-400">
+                          {task.owner}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-6">
+                  <h2 className="text-lg font-bold">الوثائق</h2>
+                  <p className="mt-1 text-sm text-slate-400">
+                    الملفات المرتبطة بالنشاط
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {documents.map((document) => (
+                    <div
+                      key={document.name}
+                      className="rounded-2xl border border-slate-100 p-4 transition hover:border-slate-200 hover:bg-slate-50"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                        <FileText size={18} />
+                      </div>
+
+                      <p className="mt-4 text-sm font-medium leading-6 text-slate-700">
+                        {document.name}
+                      </p>
+
+                      <p className="mt-1 text-[11px] text-slate-400">
+                        {document.type}
                       </p>
                     </div>
                   ))}
                 </div>
-              </div>
-            </section>
+              </section>
+            </div>
 
-            {/* Execution stages */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-              <SectionHeader
-                icon={<ClipboardCheck className="h-5 w-5" />}
-                title="مراحل تنفيذ النشاط"
-                description="تتبع تقدم النشاط من التخطيط إلى التقرير النهائي"
-              />
+            <aside className="space-y-6">
+              <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-lg font-bold">معلومات سريعة</h2>
 
-              <div className="p-5">
-                <div className="space-y-4">
-                  {executionSteps.map((step, index) => {
-                    const isDone = step.status === "منجز";
-                    const isCurrent = step.status === "قيد التنفيذ";
+                <div className="mt-5 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                      <CalendarDays size={17} />
+                    </div>
 
-                    return (
-                      <div key={step.id} className="relative">
-                        {index !== executionSteps.length - 1 && (
-                          <div className="absolute right-[19px] top-10 h-[calc(100%+16px)] w-px bg-slate-200" />
-                        )}
+                    <div>
+                      <p className="text-xs text-slate-400">التاريخ</p>
+                      <p className="mt-1 text-sm font-medium">
+                        05 أكتوبر
+                      </p>
+                    </div>
+                  </div>
 
-                        <div className="relative flex gap-4">
-                          <div
-                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border ${
-                              isDone
-                                ? "border-emerald-200 bg-emerald-50 text-emerald-600"
-                                : isCurrent
-                                  ? "border-blue-200 bg-blue-50 text-blue-600"
-                                  : "border-slate-200 bg-slate-50 text-slate-400"
-                            }`}
-                          >
-                            {isDone ? (
-                              <CheckCircle2 className="h-5 w-5" />
-                            ) : (
-                              <span className="text-sm font-semibold">
-                                {step.id}
-                              </span>
-                            )}
-                          </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                      <Clock3 size={17} />
+                    </div>
 
-                          <div className="min-w-0 flex-1 pb-5">
-                            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                              <h3 className="font-semibold text-slate-900">
-                                {step.title}
-                              </h3>
+                    <div>
+                      <p className="text-xs text-slate-400">التوقيت</p>
+                      <p className="mt-1 text-sm font-medium">10:00</p>
+                    </div>
+                  </div>
 
-                              <StatusBadge status={step.status} />
-                            </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                      <MapPin size={17} />
+                    </div>
 
-                            <p className="mt-2 text-sm leading-6 text-slate-500">
-                              {step.description}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                    <div>
+                      <p className="text-xs text-slate-400">المكان</p>
+                      <p className="mt-1 text-sm font-medium">المؤسسة</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+
+              <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white">
+                    <Users size={19} />
+                  </div>
+
+                  <div>
+                    <h2 className="font-bold">فريق التنظيم</h2>
+                    <p className="text-xs text-slate-400">
+                      4 أعضاء
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 space-y-3">
+                  {[
+                    ["الأستاذ المسؤول", "منسق النشاط"],
+                    ["الإدارة", "الدعم والتنظيم"],
+                    ["فريق النشاط", "الإعداد والتنفيذ"],
+                  ].map(([name, role]) => (
+                    <div
+                      key={name}
+                      className="flex items-center justify-between rounded-2xl bg-slate-50 p-3"
+                    >
+                      <div>
+                        <p className="text-xs font-medium text-slate-700">
+                          {name}
+                        </p>
+                        <p className="mt-1 text-[11px] text-slate-400">
+                          {role}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-3xl bg-slate-950 p-6 text-white">
+                <p className="text-sm font-semibold">الموارد المطلوبة</p>
+
+                <ul className="mt-4 space-y-3 text-xs leading-5 text-slate-400">
+                  <li>• جهاز عرض ومكبرات صوت</li>
+                  <li>• تجهيز فضاء الاحتفال</li>
+                  <li>• شهادات التكريم</li>
+                  <li>• مواد خاصة بالعروض</li>
+                </ul>
+              </section>
+            </aside>
           </div>
-
-          {/* Right sidebar */}
-          <aside className="space-y-6">
-            {/* Responsible team */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-              <SectionHeader
-                icon={<Users className="h-5 w-5" />}
-                title="فريق التنظيم"
-              />
-
-              <div className="space-y-4 p-5">
-                <Person
-                  name="محمد العلوي"
-                  role="المسؤول عن النشاط"
-                  initials="م"
-                />
-
-                <Person
-                  name="سعاد أمين"
-                  role="عضو اللجنة التنظيمية"
-                  initials="س"
-                />
-
-                <Person
-                  name="أحمد بنعلي"
-                  role="التنسيق الرياضي"
-                  initials="أ"
-                />
-              </div>
-            </section>
-
-            {/* Resources */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-              <SectionHeader
-                icon={<Wrench className="h-5 w-5" />}
-                title="الموارد والتجهيزات"
-              />
-
-              <div className="space-y-2 p-5">
-                <Resource text="كرات رياضية" />
-                <Resource text="أقماع التدريب" />
-                <Resource text="صدريات الفرق" />
-                <Resource text="صافرات التحكيم" />
-                <Resource text="مكبر صوت" />
-                <Resource text="شهادات وجوائز" />
-              </div>
-            </section>
-
-            {/* Documents */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-              <SectionHeader
-                icon={<FileText className="h-5 w-5" />}
-                title="الوثائق"
-              />
-
-              <div className="space-y-2 p-5">
-                <DocumentItem
-                  title="البرنامج التفصيلي"
-                  type="PDF"
-                />
-
-                <DocumentItem
-                  title="لائحة المشاركين"
-                  type="XLSX"
-                />
-
-                <DocumentItem
-                  title="بطاقة النشاط"
-                  type="PDF"
-                />
-              </div>
-            </section>
-          </aside>
-        </div>
+        </main>
       </div>
-    </main>
-  );
-}
-
-function InfoCard({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-          {icon}
-        </div>
-
-        <div>
-          <p className="text-xs text-slate-400">{label}</p>
-          <p className="mt-1 text-sm font-semibold text-slate-800">
-            {value}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SectionHeader({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description?: string;
-}) {
-  return (
-    <div className="flex items-start gap-3 border-b border-slate-100 p-5">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-        {icon}
-      </div>
-
-      <div>
-        <h2 className="font-semibold text-slate-900">{title}</h2>
-
-        {description && (
-          <p className="mt-1 text-xs text-slate-500">{description}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function Objective({ text }: { text: string }) {
-  return (
-    <div className="flex items-start gap-3 rounded-xl bg-slate-50 p-3">
-      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-
-      <p className="text-sm leading-6 text-slate-700">{text}</p>
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const styles =
-    status === "منجز"
-      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-      : status === "قيد التنفيذ"
-        ? "bg-blue-50 text-blue-700 border-blue-200"
-        : "bg-slate-50 text-slate-500 border-slate-200";
-
-  return (
-    <span
-      className={`inline-flex w-fit rounded-full border px-3 py-1 text-xs font-medium ${styles}`}
-    >
-      {status}
-    </span>
-  );
-}
-
-function Person({
-  name,
-  role,
-  initials,
-}: {
-  name: string;
-  role: string;
-  initials: string;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
-        {initials}
-      </div>
-
-      <div>
-        <p className="text-sm font-medium text-slate-900">{name}</p>
-        <p className="mt-1 text-xs text-slate-500">{role}</p>
-      </div>
-    </div>
-  );
-}
-
-function Resource({ text }: { text: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-lg bg-slate-50 px-3 py-2.5">
-      <Wrench className="h-4 w-4 text-slate-400" />
-      <span className="text-sm text-slate-700">{text}</span>
-    </div>
-  );
-}
-
-function DocumentItem({
-  title,
-  type,
-}: {
-  title: string;
-  type: string;
-}) {
-  return (
-    <button className="flex w-full items-center justify-between rounded-lg border border-slate-100 p-3 text-right hover:bg-slate-50">
-      <div className="flex items-center gap-3">
-        <FileText className="h-4 w-4 text-slate-400" />
-
-        <span className="text-sm text-slate-700">{title}</span>
-      </div>
-
-      <span className="text-[10px] font-semibold text-slate-400">
-        {type}
-      </span>
-    </button>
+    </AppShell>
   );
 }
